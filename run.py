@@ -12,6 +12,36 @@ from sklearn.externals import joblib
 from sqlalchemy import create_engine
 from sklearn.base import BaseEstimator, TransformerMixin
 
+
+##################################################
+import sys
+import pandas as pd
+import sqlalchemy
+from sqlalchemy import create_engine
+
+import operator
+import string
+import re
+
+import nltk
+nltk.download(['punkt', 'wordnet','stopwords'])
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords
+
+
+from sklearn.pipeline import Pipeline,FeatureUnion
+from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.base import BaseEstimator, TransformerMixin
+
+from sklearn.multioutput import MultiOutputClassifier
+from sklearn.model_selection import GridSearchCV
+import pickle
+##################################################
+
 class PopularWords(BaseEstimator, TransformerMixin):
     def __init__(self, word_dict, pct = .001):
         self.word_dict = word_dict
