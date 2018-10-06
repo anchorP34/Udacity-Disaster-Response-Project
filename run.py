@@ -26,7 +26,6 @@ import re
 import nltk
 nltk.download(['punkt', 'wordnet','stopwords'])
 from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
 
@@ -117,6 +116,32 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    # Custom Viz 1
+    viz_1 = pd.DataFrame(df.iloc[:,4:].mean(), columns = ['Val']).sort_values('Val', ascending = False).iloc[:5,:]
+    top_5_vals = viz_1['Val']
+    top_5_cols = list(viz_1.index)
+    
+    # Custom Viz 2 Setup
+    popular_words = {}
+
+    stop_words = stopwords.words('english')
+    punct = [p for p in string.punctuation]
+
+
+    for m in df['message']:
+        for word in m.split():
+            new_word = word.lower()
+            if new_word not in stop_words and new_word not in punct:
+                if new_word in popular_words:
+                    popular_words[new_word] += 1
+                else:
+                    popular_words[new_word] = 1
+    
+    viz_2 = pd.DataFrame.from_dict(popular_words, orient = 'index')
+    viz_2.columns = ['Val']
+    top_5_words_vals = viz_2.sort_values('Val', ascending = False)[:5]['Val']
+    top_5_words = list(viz_2.sort_values('Val', ascending = False)[:5].index)
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -135,6 +160,42 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        }
+     , {
+            'data': [
+                Bar(
+                    x=top_5_cols,
+                    y=top_5_vals
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 5 Message Types',
+                'yaxis': {
+                    'title': "Percentage"
+                },
+                'xaxis': {
+                    'title': "Message Type"
+                }
+            }
+        }
+        , {
+            'data': [
+                Bar(
+                    x=top_5_words,
+                    y=top_5_words_vals
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 5 Most Used Words',
+                'yaxis': {
+                    'title': "Total Count from all Messages"
+                },
+                'xaxis': {
+                    'title': "Word"
                 }
             }
         }
