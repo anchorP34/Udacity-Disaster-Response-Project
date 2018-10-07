@@ -1,6 +1,17 @@
 # Udacity-Disaster-Response-Project
 Udacity Data Science Nanodegree natural language processing to predict types of disaster messages
 
+The way to run to run this project:
+
+1. Run process_data.py to export data to a database file
+  - Need to give locations of messages and 
+2. Run train.py to export machine learning model to pickle file
+  - Need to give location of database file from process_data output
+3. Run run.py to get web application 
+  - Will need to point location of pickle file from train.py output
+  - Open separate terminal window and run env|grep WORK
+  - From the output of that, put in the URL that will replace https://SPACEID-3001.SPACEDOMAIN
+
 ## Overview
 This project is for the Data Engineering section in the Udacity Data Science Nanodegree program. The bassis of this project is to look at data provided by FigureEight. The data are tweets and texts that were sent during real world disasters and can be labeled into at least one of 36 categories. 
 
