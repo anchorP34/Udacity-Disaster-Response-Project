@@ -43,6 +43,19 @@ import pickle
 
 class PopularWords(BaseEstimator, TransformerMixin):
     def __init__(self, word_dict, pct = .001):
+        """
+      This class is to see if the input message has common words that other messages have, or
+      if it is truly a unique message. The theory is that certain messages can be grouped together
+      based on the number of common words that are in the message.
+      
+      Input: word_dict - Dictionary
+             Dictionary of words (key) with the word frequency (value)
+             
+             pct - Percentage (float)
+             The top X% of common words that you would like to compare to in the word_dict.
+             The lower the number of words, the more unique the message
+             
+        """
         self.word_dict = word_dict
         if pct == None:
             self.n = int(len(self.word_dict) * .01)
@@ -50,13 +63,36 @@ class PopularWords(BaseEstimator, TransformerMixin):
             self.n = int(len(self.word_dict) * pct)
         
     def fit(self, X, y = None):
+        """
+        Returns self, but is needed for pipeline.
+        """
         return self
             
     
     def transform(self, X):
-        
+        """
+        Transforms messages to find the number of words that are most common in all messages to determine
+        how unique a message is.
+        """
         def get_word_count(message_list, top_word_count, sorted_dict):
-            
+            """
+              Returns the total number of words that are in the message that are in the top X most
+              frequent words out of all the messages
+              
+              Input: message_list - String
+                     The messages that are going to be input
+                     
+                     top_word_count - Int
+                     The top number of most frequent words in all messages to compare to individual message
+                     
+                     sorted_dict - Dictionary
+                     The sored dictionary of all the word frequencies
+                     
+              Output: total_count - Int
+                      The total number of words from the message that are in the most frequent number of input words 
+                      from all messages
+              
+            """
             total_count = 0
             for w in range(top_word_count):
                 if sorted_dict[w][0] in message_list:
@@ -64,18 +100,24 @@ class PopularWords(BaseEstimator, TransformerMixin):
         
             return total_count 
         
-        
+        # Sort the dictionary from most frequent words to least frequent words
         sorted_dict = sorted(self.word_dict.items(), key=operator.itemgetter(1), reverse = True)
         
+        # Make the words lowercase
         lower_list = pd.Series(X).apply(lambda x: x.lower())
         
+        # Get rid of punctuation
         no_punct = pd.Series(lower_list).apply(lambda x: re.sub(r'[^\w\s]','', x))
         
+        # Create list of the words that are not stop words
         final_trans = pd.Series(no_punct).apply(lambda x: x.split())
         
+        # Get the top number of words that want to be viewed from the dictionary
         top_word_cnt = self.n
-         
+        
+        # Get the results
         results = pd.Series(final_trans).apply(lambda x: get_word_count(x,top_word_cnt, sorted_dict)).values
+        # Put in DataFrame output to work with pipeline
         return pd.DataFrame(results)
 
 
@@ -83,6 +125,9 @@ class PopularWords(BaseEstimator, TransformerMixin):
 app = Flask(__name__)
 
 def tokenize(text):
+    """
+    Cleans messages for preparation for pipelines
+    """
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -228,6 +273,9 @@ def go():
 
 
 def main():
+    """
+    Create port location to run application on
+    """
     app.run(host='0.0.0.0', port=3001, debug=True)
 
 
