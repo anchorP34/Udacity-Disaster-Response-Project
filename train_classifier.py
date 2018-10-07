@@ -92,11 +92,17 @@ class PopularWords(BaseEstimator, TransformerMixin):
             self.n = int(len(self.word_dict) * pct)
         
     def fit(self, X, y = None):
+        """
+        Returns self, but is needed for pipeline.
+        """
         return self
             
     
     def transform(self, X):
-        
+        """
+        Transforms messages to find the number of words that are most common in all messages to determine
+        how unique a message is.
+        """
         def get_word_count(message_list, top_word_count, sorted_dict):
             """
               Returns the total number of words that are in the message that are in the top X most
@@ -142,6 +148,7 @@ class PopularWords(BaseEstimator, TransformerMixin):
         results = pd.Series(final_trans).apply(lambda x: get_word_count(x,top_word_cnt, sorted_dict)).values
         # Put in DataFrame output to work with pipeline
         return pd.DataFrame(results)
+
 
 
 def tokenize(text):
