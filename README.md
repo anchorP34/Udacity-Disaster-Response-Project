@@ -20,6 +20,15 @@ This project required 3 steps:
   2. Write machine learning algorithm to analyze messages and optomize model to correctly classify labels for that text
   3. Create web aplication that can show 3 graphs of overviews of the messages, as well as a input bar that could read a message and correctly classify what label it would belong to.
   
+## Categories of messages (disaster_categories.csv)
+CSV of categories of all messages (36 possible categories)
+
+## Messages (disaster_messages.csv)
+CSV of all disaster messages
+
+## Database file (DisasterResponse.db)
+Database file that is the output of the ETL section
+  
   
 ## ETL Section (process_data.py)
 
@@ -46,5 +55,3 @@ The best model was then saved to a pickle file to be used for future predictions
 The web application shows 3 different bar charts: Genre frequency, top 5 response features, and the top 5 words most frequently used in the messages.
 
 If you put in a message into the text bar, you can see what my model would predict of the 36 different feature variables. An easy one to use is "I really need some help!", which gets classified as Related, Request, and Aid Related.
-
-
